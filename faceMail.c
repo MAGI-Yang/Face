@@ -52,37 +52,25 @@ int main(int argc, char **argv)
 
 void detectFace(IplImage *pFrame, CascadeClassifier cascade, CvHaarClassifierCascade* classifier)
 {
-	CvMemStorage* facesMemStorage=cvCreateMemStorage(0);
-	IplImage* grayScale = cvCreateImage(cvGetSize(pFrame), 8, 1);
-	IplImage* image;
+	std::vector<Rect> faces;
 
-	cvCvtColor(grayScale, image,CV_BGR2GRAY);
+	Mat mGray;
+	Mat mFrame(pFrame, 0);
 
-	CvSeq* Faces = cvHaarDetectObjects(
-					image, classifier, facesMemStorage, 1.1, 3,
-					CV_HAAR_DO_CANNY_PRUNING,
-					cvSize(5, 5)
-					);
+	cvtColor( mFrame, mGray, CV_BGR2GRAY );
+	equalizeHist( mGray, mGray );
 
-	if(Faces)
+	cascade.detectMultiScale( mGray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(10, 10) );
+
+	for( int i = 0; i < faces.size(); i++ )
 	{
-		for(int i = 0; i < Faces -> total; ++i)
-		{
-		// Setup two points that define the extremes of the rectangle,
-		// then draw it to the image
-			CvPoint point1, point2;
-			CvRect* rectangle = (CvRect*)cvGetSeqElem(Faces, i);
-			point1.x = rectangle -> x;
-			point2.x = rectangle -> x + rectangle -> width;
-			point1.y = rectangle -> y;
-			point2.y = rectangle -> y + rectangle -> height;
-			cvRectangle(pFrame, point1, point2, CV_RGB(255,0,0), 3, 8, 0);
-		}
+		Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
+		ellipse( mFrame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
 	}
 
 	cvSaveImage("after.jpg", pFrame);
+	system("echo I GET YOU! | mutt -s 'Mail From Pi'  710872980@qq.com -a ~/Desktop/after.jpg ");
+	system("echo I GET YOU !");
 
-	cvReleaseMemStorage(&facesMemStorage);
-	cvReleaseImage(&pFrame);
-	cvReleaseHaarClassifierCascade(&classifier);
+
 }

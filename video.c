@@ -10,7 +10,7 @@ int main( int argc, char** argv )
 
 	IplImage* pFrame = NULL;
 
-	CvCapture* pCapture = cvCreateCameraCapture(-1);
+	CvCapture* pCapture = cvCreateCameraCapture(0);
 
 	cvNamedWindow("Video", 1);
 
@@ -19,7 +19,7 @@ int main( int argc, char** argv )
 		pFrame = cvQueryFrame( pCapture );
 		if(!pFrame)break;
 		cvShowImage("Video",pFrame);
-		char c = cvWaitKey(33);
+		char c = cvWaitKey(200);
 		if(c == 27)break;
 	}
 	cvReleaseCapture(&pCapture);

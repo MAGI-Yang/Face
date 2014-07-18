@@ -1,0 +1,20 @@
+//txt web browser
+sudo apt-get install w3m
+
+//compile cam.c
+g++ -I/usr/include/opencv/ -I/usr/include/opencv2/ `pkg-config --cflags opencv --libs opencv` cam.c -o cam
+
+// IplImage to Mat
+IplImage *img;
+cv::Mat mat(img, 0);
+
+// Mat to IplImage
+cv::Mat mat;
+IplImage *img = IplImage(mat);
+
+//Mail with attachment using mutt
+echo "Photo:" | mutt -s "Hello Mail" xxxxx@xx.com -a attachment
+
+//Mail using mail
+echo "Photo:" | mail -s "Hello Mail" xxxxxx@xx.com 
+
